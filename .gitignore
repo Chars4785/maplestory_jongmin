@@ -1,4 +1,7 @@
 
 /auth-server/node_modules
-/event-server/node_modules
+/auth-server/dist
+/campaign-server/node_modules
+/campaign-server/dist
 /gateway-server/node_modules
+/gateway-server/dist
