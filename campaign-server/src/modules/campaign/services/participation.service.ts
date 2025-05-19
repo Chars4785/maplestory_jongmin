@@ -2,12 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { NotFoundException } from 'src/common/base-exception';
+import { AuthApiService } from 'src/modules/api/service/auth-api.service';
 import { ParticipationDto } from '../dto/participation/participation.dto';
 import { RewardLogDto } from '../dto/rewardlog/reward-log.dto';
 import { ParticipationStatus } from '../entities/participation.entity';
 import { ParticipationAlreadyRewardedException } from '../exception/participation-already-rewarded.exception';
 import { ParticipationRepository } from '../repository/participation.repository';
 import { RewardLogRepository } from '../repository/rewards-log.repository';
+import {
+  ClearQuestCondition,
+  InvitedFriendCountCondition,
+  RecentThreeDayLoginCondition,
+  RewardCondition,
+} from '../types/reward-condition.type';
 import { CampaignService } from './campaign.service';
 
 @Injectable()
@@ -17,6 +24,7 @@ export class ParticipationService {
     private readonly campaignService: CampaignService,
     private readonly rewardLogRepository: RewardLogRepository,
     @InjectConnection() private readonly connection: Connection,
+    private readonly authApiService: AuthApiService,
   ) {}
 
   async findParticipationById(id: string): Promise<ParticipationDto | null> {
@@ -53,6 +61,25 @@ export class ParticipationService {
     return ParticipationDto.fromEntity(participation);
   }
 
+  async getParticipatorsRewardHistory() {
+    const rewardHistory = await this.rewardLogRepository.findAll();
+    return rewardHistory.map((reward) => RewardLogDto.fromEntity(reward));
+  }
+
+  async getParticipationRewardHistory(participationId: string) {
+    const rewardHistory = await this.rewardLogRepository.findOne({
+      participationId,
+    });
+
+    if (!rewardHistory) {
+      throw new NotFoundException({
+        message: '보상 지급 내역을 찾을 수 없습니다.',
+      });
+    }
+
+    return RewardLogDto.fromEntity(rewardHistory);
+  }
+
   async participationReward(id: string, executedAccountId: string) {
     const session = await this.connection.startSession();
     session.startTransaction();
@@ -70,6 +97,15 @@ export class ParticipationService {
 
       const campaign = await this.campaignService.getActiveCampaign(
         participation.campaignId,
+      );
+
+      const account = await this.authApiService.getAccount(
+        participation.accountId,
+      );
+
+      await this.validateParticipationConditionForReward(
+        campaign.condition,
+        account,
       );
 
       await this.rewardLogRepository.create({
@@ -94,22 +130,13 @@ export class ParticipationService {
     }
   }
 
-  async getParticipatorsRewardHistory() {
-    const rewardHistory = await this.rewardLogRepository.findAll();
-    return rewardHistory.map((reward) => RewardLogDto.fromEntity(reward));
-  }
-
-  async getParticipationRewardHistory(participationId: string) {
-    const rewardHistory = await this.rewardLogRepository.findOne({
-      participationId,
-    });
-
-    if (!rewardHistory) {
-      throw new NotFoundException({
-        message: '보상 지급 내역을 찾을 수 없습니다.',
-      });
+  async validateParticipationConditionForReward(condition: RewardCondition) {
+    if (condition instanceof RecentThreeDayLoginCondition) {
+      // 최근 3일 로그인 조건 검증
+    } else if (condition instanceof InvitedFriendCountCondition) {
+      // 초대 친구 수 조건 검증
+    } else if (condition instanceof ClearQuestCondition) {
+      // 퀘스트 완료 조건 검증
     }
-
-    return RewardLogDto.fromEntity(rewardHistory);
   }
 }
