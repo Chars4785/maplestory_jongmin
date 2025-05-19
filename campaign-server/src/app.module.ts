@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { CampaignModule } from './modules/campaign/campaign.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    CampaignModule,
+    MongooseModule.forRoot('mongodb://localhost/maplestory'),
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

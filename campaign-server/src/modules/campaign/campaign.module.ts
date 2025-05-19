@@ -3,11 +3,20 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CampaignController } from './controllers/campaign.controller';
 import { ParticipationController } from './controllers/participation.controller';
 import { RewardController } from './controllers/reward.controller';
-import { CampaignEntity } from './entities/campaign.entity';
-import { ParticipationEntity } from './entities/participation.entity';
-import { RewardEntity } from './entities/rewards.entity';
+import { CampaignEntity, CampaignSchema } from './entities/campaign.entity';
+import {
+  ParticipationEntity,
+  ParticipationSchema,
+} from './entities/participation.entity';
+import {
+  RewardLogEntity,
+  RewardsLogSchema,
+} from './entities/reward-log.entity';
+import { RewardEntity, RewardSchema } from './entities/rewards.entity';
 import { CampaignRepository } from './repository/campaign.repository';
+import { ParticipationRepository } from './repository/participation.repository';
 import { RewardRepository } from './repository/reward.repository';
+import { RewardLogRepository } from './repository/rewards-log.repository';
 import { CampaignService } from './services/campaign.service';
 import { ParticipationService } from './services/participation.service';
 import { RewardService } from './services/reward.service';
@@ -15,9 +24,10 @@ import { RewardService } from './services/reward.service';
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: CampaignEntity.name, schema: CampaignEntity },
-      { name: RewardEntity.name, schema: RewardEntity },
-      { name: ParticipationEntity.name, schema: ParticipationEntity },
+      { name: CampaignEntity.name, schema: CampaignSchema },
+      { name: RewardEntity.name, schema: RewardSchema },
+      { name: ParticipationEntity.name, schema: ParticipationSchema },
+      { name: RewardLogEntity.name, schema: RewardsLogSchema },
     ]),
   ],
   controllers: [CampaignController, RewardController, ParticipationController],
@@ -27,6 +37,8 @@ import { RewardService } from './services/reward.service';
     RewardService,
     RewardRepository,
     ParticipationService,
+    ParticipationRepository,
+    RewardLogRepository,
   ],
   exports: [CampaignService],
 })

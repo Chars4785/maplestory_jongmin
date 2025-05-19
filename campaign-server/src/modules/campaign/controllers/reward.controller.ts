@@ -1,5 +1,15 @@
-import { Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
+import { CreateRewardDto } from '../dto/reward/create-reward.dto';
+import { UpdateRewardDto } from '../dto/reward/update-reward.dto';
 import { RewardService } from '../services/reward.service';
 
 @Controller('reward')
@@ -9,30 +19,24 @@ export class RewardController {
   @Get()
   @ApiOperation({ summary: '리워드 조회' })
   getRewards() {
-    return 'getRewards';
+    return this.rewardService.getRewards();
   }
 
   @Post()
   @ApiOperation({ summary: '리워드 생성' })
-  createReward() {
-    return 'createReward';
+  createReward(@Body() body: CreateRewardDto) {
+    return this.rewardService.createReward(body);
   }
 
-  @Patch()
+  @Patch(':id')
   @ApiOperation({ summary: '리워드 수정' })
-  updateReward() {
-    return 'updateReward';
+  updateReward(@Param('id') id: string, @Body() body: UpdateRewardDto) {
+    return this.rewardService.updateReward(id, body);
   }
 
-  @Post()
-  @ApiOperation({ summary: '리워드 지급' })
-  reward() {
-    return 'reward';
-  }
-
-  @Get(':id')
-  @ApiOperation({ summary: '리워드 지급 내역 조회' })
-  getReward(@Param('id') id: string) {
-    return 'getReward';
+  @Delete(':id')
+  @ApiOperation({ summary: '리워드 삭제' })
+  deleteReward(@Param('id') id: string) {
+    return this.rewardService.deleteReward(id);
   }
 }

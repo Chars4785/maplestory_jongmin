@@ -1,10 +1,17 @@
 version: "3.8"
 
 services:
+  # environment:
+  #   NODE_ENV=${NODE_ENV}
+  #   MONGO_URI=mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongodb:27017
+  #   JWT_SECRET=${JWT_SECRET}
+  #   MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+  #   MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
   mongodb:
     image: mongo:latest
     container_name: mongodb
     restart: always
+
     ports:
       - "27017:27017"
     volumes:
@@ -20,9 +27,6 @@ services:
   #   restart: no
   #   ports:
   #     - "3000:3000"
-  #   volumes:
-  #     - ./gateway-server:/var/app
-  #     - /var/app/node_modules
   #   depends_on:
   #     - mongodb
   #   networks:
@@ -36,9 +40,6 @@ services:
   #   restart: no
   #   ports:
   #     - "3001:3001"
-  #   volumes:
-  #     - ./auth-server:/var/app
-  #     - /var/app/node_modules
   #   depends_on:
   #     - mongodb
   #   networks:
@@ -52,9 +53,6 @@ services:
   #   restart: no
   #   ports:
   #     - "3002:3002"
-  #   volumes:
-  #     - ./campaign-server:/var/app
-  #     - /var/app/node_modules
   #   depends_on:
   #     - mongodb
   #   networks:

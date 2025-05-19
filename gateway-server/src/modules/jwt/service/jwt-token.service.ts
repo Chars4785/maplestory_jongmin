@@ -1,8 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from '../dataTransfer/dto/jwt-payload.dto';
-
+import { JwtPayload } from 'common/types/jwt-payload.type';
 @Injectable()
 export class JwtTokenService {
   jwtSecret: string;

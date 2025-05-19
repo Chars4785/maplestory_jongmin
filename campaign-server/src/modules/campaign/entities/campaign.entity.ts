@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { RewardCondition } from '../types/reward-condition.type';
-import { RewardType } from '../types/reward-type.enum';
+import { ParticipationEntity } from './participation.entity';
+import { RewardEntity } from './rewards.entity';
 
 export type CampaignDocument = HydratedDocument<CampaignEntity>;
 
@@ -12,17 +13,28 @@ export enum Role {
   ADMIN = 'ADMIN',
 }
 
+export enum CampaignStatus {
+  PENDING = 'PENDING',
+  ACTIVE = 'ACTIVE',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+}
+
 @Schema({ timestamps: true })
 export class CampaignEntity {
+  @Prop({ alias: '_id' })
+  id: string;
+
   // 자동 지급
   @Prop({ required: true })
   autoReward: boolean;
+
   // reward 종류
-  @Prop({ required: true, enum: RewardType })
-  rewardType: RewardType;
+  @Prop({ type: Types.ObjectId, ref: 'Reward' })
+  rewardId: string;
 
   // 조건 metadata
-  @Prop({ required: true })
+  @Prop({ type: Object, required: true })
   condition: RewardCondition;
 
   // 캠패인 생성자
@@ -38,7 +50,13 @@ export class CampaignEntity {
 
   // 캠패인 상태
   @Prop({ required: true })
-  status: string;
+  status: CampaignStatus;
+
+  @Prop({ type: RewardEntity })
+  rewards: RewardEntity;
+
+  @Prop({ type: [Types.ObjectId], ref: 'Participation', default: [] })
+  participators: ParticipationEntity[];
 }
 
-export const AccountSchema = SchemaFactory.createForClass(CampaignEntity);
+export const CampaignSchema = SchemaFactory.createForClass(CampaignEntity);

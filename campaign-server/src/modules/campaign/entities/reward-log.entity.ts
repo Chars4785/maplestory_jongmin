@@ -1,10 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export type RewardsLogDocument = HydratedDocument<RewardsLogEntity>;
+export type RewardsLogDocument = HydratedDocument<RewardLogEntity>;
 
 @Schema({ timestamps: true })
-export class RewardsLogEntity {
+export class RewardLogEntity {
+  @Prop({ alias: '_id' })
+  id: string;
+
   @Prop({ required: true })
   campaignId: string;
 
@@ -18,4 +21,4 @@ export class RewardsLogEntity {
   executedAccountId: string;
 }
 
-export const RewardsLogSchema = SchemaFactory.createForClass(RewardsLogEntity);
+export const RewardsLogSchema = SchemaFactory.createForClass(RewardLogEntity);
