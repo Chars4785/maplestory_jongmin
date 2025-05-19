@@ -12,6 +12,9 @@ export enum Role {
 
 @Schema({ timestamps: true })
 export class AccountEntity {
+  @Prop({ alias: '_id' })
+  id: string;
+
   @Prop({ required: true, unique: true })
   loginId: string;
 
@@ -20,6 +23,18 @@ export class AccountEntity {
 
   @Prop({ enum: Role, default: Role.USER })
   role: Role;
+
+  // 마지막 로그인 시간
+  @Prop()
+  lastLoginAt?: Date;
+
+  // 달성한 업적 목록
+  @Prop()
+  achievements: string[];
+
+  // 초대 친구 카운트
+  @Prop()
+  invitedFriendCount: number;
 }
 
 export const AccountSchema = SchemaFactory.createForClass(AccountEntity);

@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as _ from 'lodash';
 import { Nullable } from 'src/common/type-aliases';
+import { Account } from '../types/\baccount.type';
 
 @Injectable()
 export class AuthApiService {
-  private readonly apiBaseUrl = 'http://localhost:3000/api/v1/auth';
+  private readonly apiBaseUrl = 'http://localhost:3000/auth';
   private readonly apiKey = 'sparrow-api-key';
 
   joinUrlPath(baseUrl: string, path: string): string {
@@ -41,7 +42,14 @@ export class AuthApiService {
     return body;
   }
 
-  async getAccount(accountId: string): Promise<AccountDto> {
-    return this.callAuthApi<AccountDto>('/accounts/' + accountId, 'GET');
+  async getAccount(accountId: string): Promise<Account> {
+    const account = await this.callAuthApi<Account, Account>(
+      '/account/' + accountId,
+      'GET',
+    );
+    if (!account) {
+      throw new NotFoundException('계정을 찾을수 없습니다.');
+    }
+    return account;
   }
 }

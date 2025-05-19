@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AccountDto } from '../dto/account.dto';
 import { CreateAccountDto } from '../dto/create-account.dto';
 import { AuthService } from '../services/auth.service';
@@ -17,5 +17,10 @@ export class AuthController {
   @Post('login')
   login(@Body() accountDto: AccountDto) {
     return this.authService.getAccountByLoginIdAndPassword(accountDto);
+  }
+
+  @Get('account/:accountId')
+  getAccount(@Param('accountId') accountId: string) {
+    return this.authService.getAccount(accountId);
   }
 }

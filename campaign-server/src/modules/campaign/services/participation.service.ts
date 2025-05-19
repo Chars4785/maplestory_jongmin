@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { NotFoundException } from 'src/common/base-exception';
 import { AuthApiService } from 'src/modules/api/service/auth-api.service';
+import { Account } from 'src/modules/api/types/\baccount.type';
 import { ParticipationDto } from '../dto/participation/participation.dto';
 import { RewardLogDto } from '../dto/rewardlog/reward-log.dto';
 import { ParticipationStatus } from '../entities/participation.entity';
@@ -103,10 +104,7 @@ export class ParticipationService {
         participation.accountId,
       );
 
-      await this.validateParticipationConditionForReward(
-        campaign.condition,
-        account,
-      );
+      this.validateParticipationConditionForReward(campaign.condition, account);
 
       await this.rewardLogRepository.create({
         campaignId: campaign.id,
@@ -130,13 +128,28 @@ export class ParticipationService {
     }
   }
 
-  async validateParticipationConditionForReward(condition: RewardCondition) {
+  validateParticipationConditionForReward(
+    condition: RewardCondition,
+    account: Account,
+  ) {
     if (condition instanceof RecentThreeDayLoginCondition) {
-      // 최근 3일 로그인 조건 검증
+      if (account.lastLoginAt) {
+        const threeDaysAgo = new Date();
+        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+        if (account.lastLoginAt < threeDaysAgo) {
+          throw new BadRequestException(
+            '최근 3일 로그인 조건을 충족하지 않습니다.',
+          );
+        }
+      }
     } else if (condition instanceof InvitedFriendCountCondition) {
-      // 초대 친구 수 조건 검증
+      if (account.invitedFriendCount < condition.invitedCount) {
+        throw new BadRequestException('초대 친구 수 조건을 충족하지 않습니다.');
+      }
     } else if (condition instanceof ClearQuestCondition) {
-      // 퀘스트 완료 조건 검증
+      if (!account.achievements.includes(condition.questId)) {
+        throw new BadRequestException('퀘스트 완료 조건을 충족하지 않습니다.');
+      }
     }
   }
 }
