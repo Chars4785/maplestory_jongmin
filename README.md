@@ -68,3 +68,14 @@ npm run seed
 ```json
 npm run start:dev
 ```
+
+### 실행 위치
+
+```
+gateway port
+http://localhost:3000
+auth port
+http://localhost:3001
+campaign
+http://localhost:3002
+```
