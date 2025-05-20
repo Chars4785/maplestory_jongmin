@@ -10,18 +10,6 @@ export class AuthenticationService {
     private readonly authenticationRepository: AuthenticationRepository,
   ) {}
 
-  //   validateAuthentication(secretKey: AuthSecretKey) {
-  //     if (secretKey === AuthSecretKey.CUSTOMER) {
-  //       return RoleType.CUSTOMER;
-  //     }
-
-  //     if (secretKey === AuthSecretKey.PARTNER) {
-  //       return RoleType.PARTNER;
-  //     }
-
-  //     throw new UnauthorizedException();
-  //   }
-
   async findOneByAccountId(accountId: string) {
     const authentication = await this.authenticationRepository.findOne({
       accountId,
