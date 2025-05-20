@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { validateType } from 'src/utils/validation.utils';
 import { CampaignDto } from '../dto/campaign/campaign.dto';
 import { CreateCampaignDto } from '../dto/campaign/create-campaign.dto';
@@ -28,9 +29,8 @@ export class CampaignService {
 
   async getActiveCampaign(campaignId: string) {
     const campaign = await this.campaignRepository.findOne({
-      _id: campaignId,
+      _id: new Types.ObjectId(campaignId),
       status: CampaignStatus.ACTIVE,
-      endDate: { $gt: new Date() },
     });
 
     if (!campaign) {

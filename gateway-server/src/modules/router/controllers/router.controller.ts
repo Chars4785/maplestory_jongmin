@@ -1,6 +1,8 @@
 import { All, Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
-import { JwtAuthGuard } from 'src/modules/jwt/guards/jwt-auth.guard';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { RoleGuard } from 'src/guards/role.guard';
+import { LoginDto } from '../dto/login.dto';
 import { RouterService } from '../service/router.service';
 
 @Controller()
@@ -8,7 +10,7 @@ export class RouterController {
   constructor(private readonly routerService: RouterService) {}
 
   @Post('login')
-  async login(@Body() credentials: LoginDto): Promise<AuthResponse> {
+  async login(@Body() credentials: LoginDto) {
     return this.routerService.requestAuth(
       '/auth/login',
       'POST',
@@ -18,7 +20,7 @@ export class RouterController {
   }
 
   @All('auth')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard)
   async handleAllAuthRoutes(
     @Req() req: Request,
     @Body() body: any,
@@ -33,7 +35,7 @@ export class RouterController {
   }
 
   @All('campaign')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard, RoleGuard)
   async handleAllCampaignRoutes(
     @Req() req: Request,
     @Body() body: any,

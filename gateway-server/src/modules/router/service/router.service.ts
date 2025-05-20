@@ -3,8 +3,11 @@ import { BaseApiService } from 'src/modules/common/services/base-api.service';
 
 @Injectable()
 export class RouterService extends BaseApiService {
+  private auth_url = 'http://localhost:3001';
+  private campaign_url = 'http://localhost:3002';
+
   constructor() {
-    super('http://localhost:3000');
+    super();
   }
 
   async requestAuth(
@@ -13,7 +16,7 @@ export class RouterService extends BaseApiService {
     body: any,
     headers: Record<string, string>,
   ) {
-    return this.request(`/auth${path}`, method, body, headers);
+    return this.request(`${this.auth_url}${path}`, method, body, headers);
   }
 
   async requestCampaign(
@@ -22,6 +25,6 @@ export class RouterService extends BaseApiService {
     body: any,
     headers: Record<string, string>,
   ) {
-    return this.request(`/campaign${path}`, method, body, headers);
+    return this.request(`${this.campaign_url}${path}`, method, body, headers);
   }
 }

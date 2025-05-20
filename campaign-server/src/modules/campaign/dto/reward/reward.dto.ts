@@ -9,7 +9,7 @@ export class RewardDto {
 
   static fromEntity(entity: RewardEntity) {
     return StrictBuilder<RewardDto>()
-      .id(entity.id)
+      .id(entity._id?.toString() ?? '')
       .rewardType(entity.rewardType)
       .amount(entity.amount)
       .description(entity.description)

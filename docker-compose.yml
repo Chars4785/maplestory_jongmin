@@ -19,44 +19,44 @@ services:
     networks:
       - event-network
 
-  # gateway-server:
-  #   build:
-  #     context: ./gateway-server
-  #     dockerfile: Dockerfile.dev
-  #   container_name: gateway-server
-  #   restart: no
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - mongodb
-  #   networks:
-  #     - event-network
+  gateway-server:
+    build:
+      context: ./gateway-server
+      dockerfile: Dockerfile.dev
+    container_name: gateway-server
+    restart: no
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    networks:
+      - event-network
 
-  # auth-server:
-  #   build:
-  #     context: ./auth-server
-  #     dockerfile: Dockerfile.dev
-  #   container_name: auth-server
-  #   restart: no
-  #   ports:
-  #     - "3001:3001"
-  #   depends_on:
-  #     - mongodb
-  #   networks:
-  #     - event-network
+  auth-server:
+    build:
+      context: ./auth-server
+      dockerfile: Dockerfile.dev
+    container_name: auth-server
+    restart: no
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+    networks:
+      - event-network
 
-  # campaign-server:
-  #   build:
-  #     context: ./campaign-server
-  #     dockerfile: Dockerfile.dev
-  #   container_name: campaign-server
-  #   restart: no
-  #   ports:
-  #     - "3002:3002"
-  #   depends_on:
-  #     - mongodb
-  #   networks:
-  #     - event-network
+  campaign-server:
+    build:
+      context: ./campaign-server
+      dockerfile: Dockerfile.dev
+    container_name: campaign-server
+    restart: no
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongodb
+    networks:
+      - event-network
 
 networks:
   event-network:

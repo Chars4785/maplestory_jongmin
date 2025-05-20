@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'common/types/jwt-payload.type';
 import { Request } from 'express';
 
-const JWT_SECRET = 'maplestroy';
+const JWT_SECRET = 'maplestory';
 
 export const AuthUser = createParamDecorator(
   async (data: unknown, ctx: ExecutionContext) => {

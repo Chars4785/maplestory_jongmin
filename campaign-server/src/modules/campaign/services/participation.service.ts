@@ -105,7 +105,6 @@ export class ParticipationService {
       );
 
       this.validateParticipationConditionForReward(campaign.condition, account);
-
       await this.rewardLogRepository.create({
         campaignId: campaign.id,
         rewardedAccountId: participation.accountId,

@@ -18,7 +18,7 @@ export class CampaignDto {
 
   static fromEntity(entity: CampaignEntity): CampaignDto {
     return StrictBuilder<CampaignDto>()
-      .id(entity.id)
+      .id(entity._id?.toString() ?? '')
       .autoReward(entity.autoReward)
       .rewardId(entity.rewardId)
       .condition(entity.condition)

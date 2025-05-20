@@ -1,18 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'common/types/jwt-payload.type';
 @Injectable()
 export class JwtTokenService {
-  jwtSecret: string;
-  accessTokenExp: number;
-  constructor(
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
-  ) {
-    this.jwtSecret = this.configService.getOrThrow('auth.jwtSecret');
-    this.accessTokenExp = this.configService.getOrThrow('auth.accessTokenExp');
-  }
+  private readonly jwtSecret = 'maplestory';
+  private readonly accessTokenExp = 36000;
+  constructor(private readonly jwtService: JwtService) {}
 
   /**
    * 계정 정보를 기반으로 JWT 액세스 토큰을 생성합니다.

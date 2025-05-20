@@ -1,12 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 export type RewardsLogDocument = HydratedDocument<RewardLogEntity>;
 
 @Schema({ timestamps: true })
 export class RewardLogEntity {
-  @Prop({ alias: '_id' })
-  id: string;
+  _id?: Types.ObjectId;
 
   @Prop({ required: true })
   campaignId: string;

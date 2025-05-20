@@ -14,7 +14,7 @@ export class ParticipationDto {
 
   static fromEntity(entity: ParticipationEntity): ParticipationDto {
     return StrictBuilder<ParticipationDto>()
-      .id(entity.id)
+      .id(entity._id?.toString() ?? '')
       .campaignId(entity.campaignId)
       .accountId(entity.accountId)
       .rewardDate(entity.rewardDate)

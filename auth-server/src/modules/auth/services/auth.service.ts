@@ -14,7 +14,7 @@ import { AuthenticationService } from './authentication.service';
 @Injectable()
 export class AuthService {
   private readonly jwtSecret = 'maplestory';
-  private readonly accessTokenExp = 3600;
+  private readonly accessTokenExp = 36000;
 
   constructor(
     private readonly authRepository: AuthRepository,
@@ -40,7 +40,7 @@ export class AuthService {
 
     const access_token = await this.jwtService.signAsync(
       {
-        accountId: account.id,
+        accountId: account._id?.toString() ?? '',
         role: account.role,
       },
       {
@@ -49,12 +49,10 @@ export class AuthService {
       },
     );
 
-    await this.authenticationService.createAuthentication(
-      account.id,
+    return await this.authenticationService.createAuthentication(
+      account._id?.toString() ?? '',
       access_token,
     );
-
-    return AccountDto.fromEntity(account);
   }
 
   async getAccountByLoginIdAndPassword(accountDto: AccountDto) {
@@ -75,16 +73,40 @@ export class AuthService {
         message: '비밀번호가 일치하지 않습니다.',
       });
     }
+    const authentication = await this.authenticationService.findOneByAccountId(
+      account._id?.toString() ?? '',
+    );
 
-    return AccountDto.fromEntity(account);
+    if (!authentication) {
+      throw new NotFoundException({
+        message: '인증 정보를 찾을수 없습니다.',
+      });
+    }
+    let access_token = authentication.accessToken;
+    if (authentication.expiresAt < new Date()) {
+      access_token = await this.jwtService.signAsync(
+        {
+          accountId: account._id?.toString() ?? '',
+          role: account.role,
+        },
+        {
+          secret: this.jwtSecret,
+          expiresIn: this.accessTokenExp,
+        },
+      );
+      await this.authenticationService.updateTokenAuthentication(
+        account._id?.toString() ?? '',
+        access_token,
+      );
+    }
+
+    return {
+      token: access_token,
+    };
   }
 
   async getAccount(accountId: string) {
-    const account = await this.authRepository.findOne({
-      where: {
-        id: accountId,
-      },
-    });
+    const account = await this.authRepository.findById(accountId);
 
     if (!account) {
       throw new NotFoundException({

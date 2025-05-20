@@ -12,7 +12,7 @@ import { CreateRewardDto } from '../dto/reward/create-reward.dto';
 import { UpdateRewardDto } from '../dto/reward/update-reward.dto';
 import { RewardService } from '../services/reward.service';
 
-@Controller('reward')
+@Controller('/campaign/reward')
 export class RewardController {
   constructor(private readonly rewardService: RewardService) {}
 

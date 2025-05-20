@@ -1,12 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
 import * as _ from 'lodash';
 import { Nullable } from 'src/common/type-aliases';
 import { Account } from '../types/\baccount.type';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class AuthApiService {
-  private readonly apiBaseUrl = 'http://localhost:3000/auth';
-  private readonly apiKey = 'sparrow-api-key';
+  private readonly apiBaseUrl = 'http://localhost:3001/auth';
+
+  constructor(
+    @Inject(REQUEST)
+    private readonly request: Request,
+  ) {}
 
   joinUrlPath(baseUrl: string, path: string): string {
     return _.trimEnd(baseUrl, '/') + '/' + _.trimStart(path, '/');
@@ -19,13 +25,11 @@ export class AuthApiService {
   ): Promise<Nullable<ReturnType>> {
     const url = this.joinUrlPath(this.apiBaseUrl, apiPath);
     let body: Nullable<ReturnType> = null;
-
-    // 전송이 실패해도 에러를 throw 하지 않고 Sentry 에 로그만 남김.
     try {
       const response = await fetch(url, {
         method,
         headers: {
-          'X-API-KEY': this.apiKey,
+          Authorization: `${(this.request.headers?.authorization as string) ?? ''}`,
         },
         body: JSON.stringify(data),
       });
@@ -33,7 +37,7 @@ export class AuthApiService {
       if (response.ok) {
         body = (await response.json()) as ReturnType;
       } else {
-        throw new Error(`Failed to call Sparrow API: ${response.statusText}`);
+        throw new Error(`Failed to call AUTH API: ${response.statusText}`);
       }
     } catch (e) {
       console.error(e);

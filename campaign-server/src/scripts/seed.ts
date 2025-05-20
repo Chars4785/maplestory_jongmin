@@ -33,7 +33,6 @@ async function bootstrap() {
 
   // 1. Reward 데이터 생성
   const reward = await rewardModel.create({
-    id: 'reward1',
     rewardType: RewardType.POINT,
     amount: 100,
     description: '100포인트 지급',
@@ -42,26 +41,24 @@ async function bootstrap() {
 
   // 2. Campaign 데이터 생성
   const campaign = await campaignModel.create({
-    id: 'campaign1',
     autoReward: true,
-    rewardId: reward.id,
+    rewardId: reward._id,
     condition: {
       accountId: 'user1',
-      startDate: new Date('2024-06-01'),
-      endDate: new Date('2024-06-30'),
+      startDate: new Date('2025-06-01'),
+      endDate: new Date('2025-06-30'),
     },
     creatorId: 'admin',
-    startDate: new Date('2024-06-01'),
-    endDate: new Date('2024-06-30'),
+    startDate: new Date('2025-06-01'),
+    endDate: new Date('2025-06-30'),
     status: CampaignStatus.ACTIVE,
     rewards: reward,
     participators: [],
   });
-
   await participationModel.create({
-    campaignId: campaign.id,
+    campaignId: campaign._id,
     accountId: 'user1',
-    rewardDate: new Date('2024-06-01'),
+    rewardDate: new Date('2025-06-01'),
   });
 
   console.log('Seed data inserted!');

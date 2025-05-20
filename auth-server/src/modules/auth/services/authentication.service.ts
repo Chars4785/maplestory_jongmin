@@ -1,17 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { NotFoundException } from 'src/common/base-exception';
 import { AuthenticationDto } from '../dto/authentication.dto';
 import { AuthenticationRepository } from '../repository/authentication.repository';
 
 @Injectable()
 export class AuthenticationService {
-  accessTokenExp: number;
+  private readonly accessTokenExp = 36000;
   constructor(
     private readonly authenticationRepository: AuthenticationRepository,
-    private readonly configService: ConfigService,
-  ) {
-    this.accessTokenExp = this.configService.getOrThrow('auth.accessTokenExp');
-  }
+  ) {}
 
   //   validateAuthentication(secretKey: AuthSecretKey) {
   //     if (secretKey === AuthSecretKey.CUSTOMER) {
@@ -42,5 +39,26 @@ export class AuthenticationService {
     });
 
     return AuthenticationDto.fromEntity(authentication);
+  }
+
+  async updateTokenAuthentication(accountId: string, token: string) {
+    const authentication = await this.authenticationRepository.findOne({
+      accountId,
+    });
+
+    if (!authentication) {
+      throw new NotFoundException({
+        message: '인증 정보를 찾을수 없습니다.',
+      });
+    }
+
+    await this.authenticationRepository.update(
+      authentication._id?.toString() ?? '',
+      {
+        accessToken: token,
+        refreshToken: token,
+        expiresAt: new Date(Date.now() + this.accessTokenExp),
+      },
+    );
   }
 }

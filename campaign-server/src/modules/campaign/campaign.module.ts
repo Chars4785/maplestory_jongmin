@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AuthApiService } from '../api/service/auth-api.service';
 import { CampaignController } from './controllers/campaign.controller';
 import { ParticipationController } from './controllers/participation.controller';
 import { RewardController } from './controllers/reward.controller';
@@ -39,6 +40,7 @@ import { RewardService } from './services/reward.service';
     ParticipationService,
     ParticipationRepository,
     RewardLogRepository,
+    AuthApiService,
   ],
   exports: [CampaignService],
 })

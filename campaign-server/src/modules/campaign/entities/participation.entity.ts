@@ -12,9 +12,7 @@ export enum ParticipationStatus {
 
 @Schema({ timestamps: true })
 export class ParticipationEntity {
-  @Prop({ alias: '_id' })
-  id: string;
-
+  _id?: Types.ObjectId;
   @Prop({ required: true })
   campaignId: string;
 

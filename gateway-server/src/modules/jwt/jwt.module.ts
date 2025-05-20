@@ -7,7 +7,7 @@ import { JwtTokenService } from './service/jwt-token.service';
   imports: [
     JwtModuleOrg.register({
       global: true,
-      secret: process.env.JWT_SECRET || 'nubilabtest',
+      secret: process.env.JWT_SECRET || 'maplestory',
       signOptions: { expiresIn: '1h' },
     }),
   ],

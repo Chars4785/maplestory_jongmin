@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export abstract class BaseApiService {
-  protected constructor(protected readonly baseUrl: string) {}
-
   public async request<T>(
     path: string,
     method: string,
@@ -11,7 +9,7 @@ export abstract class BaseApiService {
     headers?: Record<string, string>,
   ): Promise<T> {
     try {
-      const response = await fetch(`${this.baseUrl}${path}`, {
+      const response = await fetch(`${path}`, {
         method,
         headers: {
           'Content-Type': 'application/json',

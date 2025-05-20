@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 export type RewardDocument = HydratedDocument<RewardEntity>;
 
@@ -11,9 +11,7 @@ export enum RewardType {
 
 @Schema({ timestamps: true })
 export class RewardEntity {
-  @Prop({ alias: '_id' })
-  id: string;
-
+  _id?: Types.ObjectId;
   @Prop({ required: true })
   rewardType: RewardType;
 

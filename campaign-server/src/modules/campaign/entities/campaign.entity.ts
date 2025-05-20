@@ -22,9 +22,7 @@ export enum CampaignStatus {
 
 @Schema({ timestamps: true })
 export class CampaignEntity {
-  @Prop({ alias: '_id' })
-  id: string;
-
+  _id?: Types.ObjectId;
   // 자동 지급
   @Prop({ required: true })
   autoReward: boolean;

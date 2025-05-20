@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type AuthenticationDocument = AuthenticationEntity & Document;
 
 @Schema({ timestamps: true })
 export class AuthenticationEntity {
+  _id?: Types.ObjectId;
   @Prop({ unique: true })
   accessToken: string;
 

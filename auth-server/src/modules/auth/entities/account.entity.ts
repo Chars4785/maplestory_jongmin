@@ -1,20 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 export type AccountDocument = HydratedDocument<AccountEntity>;
 
 export enum Role {
-  USER = 'USER',
-  OPERATOR = 'OPERATOR',
-  AUDITOR = 'AUDITOR',
-  ADMIN = 'ADMIN',
+  USER = 'USER', // 유저
+  OPERATOR = 'OPERATOR', // 운영자
+  AUDITOR = 'AUDITOR', // 감사자
+  ADMIN = 'ADMIN', // 관리자
 }
 
 @Schema({ timestamps: true })
 export class AccountEntity {
-  @Prop({ alias: '_id' })
-  id: string;
-
+  _id?: Types.ObjectId;
   @Prop({ required: true, unique: true })
   loginId: string;
 
